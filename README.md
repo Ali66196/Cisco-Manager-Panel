@@ -1,51 +1,60 @@
 # Cisco AI Switch Manager
 
-سامانه هوشمند مدیریت و پیکربندی سوییچ سیسکو — ترکیبی از یک پنل وب برای مدیریت مستقیم پورت‌ها و یک لایه‌ی هوش مصنوعی مبتنی بر RAG که درخواست‌های زبان طبیعی کاربر را به دستورات معتبر شبکه تبدیل می‌کند.
+An AI-powered Cisco switch management platform that combines a web-based administration panel with a Retrieval-Augmented Generation (RAG) assistant capable of translating natural language requests into validated network operations.
 
-پروژه‌ی پایانی دوره‌ی کاردانی شبکه — ترکیبی از شبکه (Cisco IOS / SSH)، توسعه‌ی وب (Flask REST API)، و هوش مصنوعی (RAG با معماری دو-Agent).
+This project was developed as a final associate degree project in Computer Networks and integrates Cisco networking, web development, and artificial intelligence into a single management platform.
 
 ---
 
-## معماری
+## Overview
 
-```
+Cisco AI Switch Manager consists of two independent components:
+
+- **Cisco Switch Panel** – A Flask-based web interface for direct switch management through SSH.
+- **AI Assistant** – A RAG-powered chatbot that allows administrators to configure switches using natural language.
+
+The AI layer is completely optional. Every operation performed by the chatbot is executed through the same REST API used by the management panel.
+
+---
+
+## Architecture
+
+```text
 ┌──────────────────┐      ┌──────────────────┐      ┌──────────────────┐
 │   Chat Panel      │ ───▶ │       n8n         │ ───▶ │      Qdrant       │
-│  (HTML/CSS/JS)    │      │  Agent 1: Planner │      │   (Vector Store)  │
-│                   │ ◀─── │  Agent 2: Executor│      │       RAG          │
+│  (HTML/CSS/JS)    │      │  Agent 1: Planner │      │   Vector Database │
+│                   │ ◀─── │  Agent 2: Executor│      │       (RAG)        │
 └─────────┬─────────┘      └──────────────────┘      └──────────────────┘
           │
-          │  اجرای دستورات API روی لوکال‌هاست
+          │ REST API
           ▼
 ┌──────────────────┐      ┌──────────────────┐      ┌──────────────────┐
-│  Cisco Panel      │ ───▶ │   switch_manager  │ ───▶ │   Cisco Switch     │
-│  (Flask + API)    │      │   (Netmiko/SSH)   │      │  (Real or Emulated)│
+│   Cisco Panel     │ ───▶ │  switch_manager   │ ───▶ │   Cisco Switch    │
+│    Flask + API    │      │  Netmiko / SSH    │      │ Real or Emulated  │
 └──────────────────┘      └──────────────────┘      └──────────────────┘
 ```
 
-پنل مدیریت سوییچ به‌صورت کاملاً مستقل کار می‌کند. لایه‌ی هوش مصنوعی یک لایه‌ی اختیاری روی همان REST API است — کاربر می‌تواند مستقیماً از رابط گرافیکی پنل استفاده کند، یا از طریق چت با زبان طبیعی همان عملیات را انجام دهد.
-
 ---
 
-## ساختار پروژه
+## Project Structure
 
-```
+```text
 ciscoprj/
-├── cisco_panel/              # پنل وب مدیریت سوییچ (Flask)
-│   ├── app.py                 # سرور اصلی، مسیرهای صفحات
-│   ├── switch_manager.py      # ارتباط SSH با سوییچ (Netmiko)
-│   ├── api_routes.py          # لایه REST API مستقل
-│   ├── API_DOCUMENTATION.md   # مستندات کامل API
+├── cisco_panel/
+│   ├── app.py
+│   ├── switch_manager.py
+│   ├── api_routes.py
+│   ├── API_DOCUMENTATION.md
 │   ├── requirements.txt
-│   ├── static/                # CSS و JavaScript پنل
-│   └── templates/             # صفحات HTML (connect, dashboard)
+│   ├── static/
+│   └── templates/
 │
 ├── cisco_emulator/
-│   └── fake_switch.py         # شبیه‌ساز SSH سوییچ سیسکو برای تست بدون هاردور
+│   └── fake_switch.py
 │
-└── Ai_pnl/                    # لایه هوش مصنوعی
-    ├── chat/                   # پنل چت (HTML/CSS/JS مستقل)
-    └── RagD/                   # اسناد Knowledge Base برای RAG
+└── Ai_pnl/
+    ├── chat/
+    └── RagD/
         ├── 01_cisco_cli_to_api_mapping.md
         ├── 02_common_scenarios.md
         ├── 03_output_format_rules.md
@@ -54,70 +63,129 @@ ciscoprj/
 
 ---
 
-## قابلیت‌ها
+# Features
 
-**پنل مدیریت سوییچ**
-- اتصال SSH به سوییچ سیسکو با Netmiko
-- نمایش بصری وضعیت هر ۱۶ پورت (رنگ بر اساس status/mode)
-- ویرایش کامل تنظیمات پورت: VLAN، Trunk/Access، Speed، Duplex، Description، Port Security
-- Enable / Disable / Reload / Reset پورت
-- REST API مستقل برای استفاده توسط ابزارهای دیگر (از جمله لایه AI)
+## Web Management Panel
 
-**لایه هوش مصنوعی**
-- مدیریت سوییچ با زبان طبیعی («پورت ۳ رو برای دوربین روی VLAN ۳۰ تنظیم کن»)
-- RAG مبتنی بر Qdrant با دانش تخصصی نگاشت دستورات Cisco IOS به endpoint های پنل
-- معماری دو-Agent: یک Agent برنامه‌ریزی می‌کند، دیگری دستورات دقیق تولید می‌کند
-- الگوی GET-تغییر-GET برای تأیید خودکار هر تغییر
-- اجرای امن دستورات از طریق مرورگر کاربر — پنل هیچ‌گاه روی اینترنت expose نمی‌شود
+- SSH connection to Cisco switches using Netmiko
+- Visual interface for monitoring all switch ports
+- Configure:
+  - VLAN
+  - Access / Trunk mode
+  - Speed
+  - Duplex
+  - Description
+  - Port Security
+- Enable, disable, reset, and reload interfaces
+- Independent REST API for external integrations
 
 ---
 
-## راه‌اندازی
+## AI Assistant
 
-### پیش‌نیازها
+- Configure switches using natural language
+- RAG knowledge base powered by Qdrant
+- Two-Agent architecture
+  - Planner Agent
+  - Executor Agent
+- Automatic GET → MODIFY → GET verification workflow
+- Executes only validated API operations
+- The switch management panel is never directly exposed to the Internet
+
+---
+
+# Installation
+
+## Requirements
+
 ```bash
 pip install -r cisco_panel/requirements.txt
 ```
 
-### اجرا (با سوییچ شبیه‌سازی‌شده)
+---
+
+## Running with the Emulator
+
+Start the emulated Cisco switch:
 
 ```bash
-# ترمینال اول — سوییچ شبیه‌سازی‌شده
 python cisco_emulator/fake_switch.py
+```
 
-# ترمینال دوم — پنل مدیریت
+Start the Flask application:
+
+```bash
 python cisco_panel/app.py
 ```
 
-مرورگر را باز کنید: `http://localhost:5000`
+Open your browser:
 
-اطلاعات اتصال پیش‌فرض شبیه‌ساز: `127.0.0.1` — پورت `2222` — کاربر `cisco` — رمز `cisco123`
+```
+http://localhost:5000
+```
 
-### اجرا با سوییچ واقعی
+Default emulator credentials:
 
-هیچ تغییری در کد لازم نیست — کافی است هنگام اتصال، IP و پورت SSH واقعی سوییچ را وارد کنید.
-
-### راه‌اندازی لایه هوش مصنوعی (اختیاری)
-
-۱. اسناد پوشه‌ی `Ai_pnl/RagD` را در یک instance از Qdrant ایندکس کنید
-۲. یک workflow روی n8n با دو Agent (طبق مستندات پروژه) بسازید
-۳. آدرس webhook را در `Ai_pnl/chat/script.js` تنظیم کنید
-۴. فایل `Ai_pnl/chat/index.html` را در مرورگر باز کنید
-
----
-
-## فناوری‌های استفاده‌شده
-
-| لایه | فناوری |
-|---|---|
-| ارتباط با سوییچ | Python، Netmiko، SSH |
-| سرور وب | Flask، REST API |
-| رابط کاربری | HTML / CSS / JavaScript خالص |
-| هوش مصنوعی | n8n، RAG، Qdrant (Vector DB) |
-| شبیه‌سازی سوییچ | Paramiko |
+| Item | Value |
+|------|-------|
+| Host | 127.0.0.1 |
+| Port | 2222 |
+| Username | cisco |
+| Password | cisco123 |
 
 ---
 
-## نویسنده
+## Running with a Real Cisco Switch
 
-پروژه‌ی پایانی دوره‌ی کاردانی شبکه — [نام خودت رو اینجا بذار]
+No code changes are required.
+
+Simply enter the switch IP address and SSH credentials in the connection page.
+
+---
+
+# AI Setup (Optional)
+
+1. Index the documents inside `Ai_pnl/RagD` into a Qdrant instance.
+2. Create the two-Agent workflow in n8n.
+3. Update the webhook URL inside:
+
+```
+Ai_pnl/chat/script.js
+```
+
+4. Open:
+
+```
+Ai_pnl/chat/index.html
+```
+
+---
+
+# Technologies
+
+| Layer | Technology |
+|--------|------------|
+| Backend | Python |
+| Web Framework | Flask |
+| Switch Communication | Netmiko, SSH |
+| REST API | Flask |
+| Frontend | HTML, CSS, JavaScript |
+| AI Workflow | n8n |
+| Retrieval | RAG |
+| Vector Database | Qdrant |
+| Switch Emulator | Paramiko |
+
+---
+
+# Project Goals
+
+- Simplify Cisco switch management
+- Provide a visual interface for administrators
+- Demonstrate how AI can safely automate network configuration
+- Showcase the integration of Networking, REST APIs, and Retrieval-Augmented Generation (RAG)
+
+---
+
+## License
+
+This project was developed for educational purposes as a final-year networking project.
