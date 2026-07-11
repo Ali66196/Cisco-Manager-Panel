@@ -184,8 +184,3 @@ Ai_pnl/chat/index.html
 - Demonstrate how AI can safely automate network configuration
 - Showcase the integration of Networking, REST APIs, and Retrieval-Augmented Generation (RAG)
 
----
-
-## License
-
-This project was developed for educational purposes as a final-year networking project.
