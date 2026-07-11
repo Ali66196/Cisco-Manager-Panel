@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Connect — Cisco Switch Panel</title>
+    <link rel="stylesheet" href="/static/style.css">
+</head>
+<body>
+    <div class="form-card">
+        <h1>Cisco Switch Management Panel</h1>
+        <h2>Connect to Switch</h2>
+
+        {% if error %}
+        <div class="error-msg">{{ error }}</div>
+        {% endif %}
+
+        <form method="POST" action="/connect">
+            <input
+                type="text"
+                name="switch_ip"
+                placeholder="Switch IP Address (e.g. 192.168.1.1)"
+                required
+            >
+            <input
+                type="number"
+                name="ssh_port"
+                value="22"
+                placeholder="SSH Port"
+                min="1"
+                max="65535"
+                required
+            >
+            <input
+                type="text"
+                name="switch_user"
+                placeholder="Switch Username"
+                autocomplete="username"
+                required
+            >
+            <input
+                type="password"
+                name="switch_pass"
+                placeholder="Switch Password"
+                autocomplete="current-password"
+                required
+            >
+            <button type="submit" class="btn-submit">Connect</button>
+        </form>
+    </div>
+</body>
+</html>

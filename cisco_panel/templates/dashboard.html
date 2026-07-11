@@ -1,0 +1,278 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Dashboard — Cisco Switch Panel</title>
+    <link rel="stylesheet" href="/static/style.css">
+</head>
+<body>
+
+    <!-- هدر صفحه -->
+    <div id="header">
+        <h1>Cisco Switch Panel</h1>
+        <span id="header-ip">Connected to: {{ switch_ip }}</span>
+        <button class="btn-gray" onclick="location.href='/change-switch'">⇄ Change Switch</button>
+    </div>
+
+    <!-- محفظه تصویر سوییچ -->
+    <div id="switch-container">
+
+        <!-- بدنه CSS سوییچ سیسکو -->
+        <div id="switch-body">
+
+            <!-- نوار بالایی سوییچ -->
+            <div id="switch-top-bar">
+                <span class="cisco-logo">CISCO</span>
+                <span class="switch-model">Catalyst 2960 — 16 Port</span>
+                <span id="refresh-indicator">⟳ Auto-refresh: 30s</span>
+            </div>
+
+            <!-- ردیف اول: پورت ۱ تا ۸ -->
+            <div class="port-row">
+                <div class="port port-unknown" data-port="Fa0/1" data-index="1" onclick="openPortModal('Fa0/1')">
+                    <div class="port-led"></div>
+                    <div class="port-hole"></div>
+                    <div class="port-number">1</div>
+                </div>
+                <div class="port port-unknown" data-port="Fa0/2" data-index="2" onclick="openPortModal('Fa0/2')">
+                    <div class="port-led"></div>
+                    <div class="port-hole"></div>
+                    <div class="port-number">2</div>
+                </div>
+                <div class="port port-unknown" data-port="Fa0/3" data-index="3" onclick="openPortModal('Fa0/3')">
+                    <div class="port-led"></div>
+                    <div class="port-hole"></div>
+                    <div class="port-number">3</div>
+                </div>
+                <div class="port port-unknown" data-port="Fa0/4" data-index="4" onclick="openPortModal('Fa0/4')">
+                    <div class="port-led"></div>
+                    <div class="port-hole"></div>
+                    <div class="port-number">4</div>
+                </div>
+                <div class="port port-unknown" data-port="Fa0/5" data-index="5" onclick="openPortModal('Fa0/5')">
+                    <div class="port-led"></div>
+                    <div class="port-hole"></div>
+                    <div class="port-number">5</div>
+                </div>
+                <div class="port port-unknown" data-port="Fa0/6" data-index="6" onclick="openPortModal('Fa0/6')">
+                    <div class="port-led"></div>
+                    <div class="port-hole"></div>
+                    <div class="port-number">6</div>
+                </div>
+                <div class="port port-unknown" data-port="Fa0/7" data-index="7" onclick="openPortModal('Fa0/7')">
+                    <div class="port-led"></div>
+                    <div class="port-hole"></div>
+                    <div class="port-number">7</div>
+                </div>
+                <div class="port port-unknown" data-port="Fa0/8" data-index="8" onclick="openPortModal('Fa0/8')">
+                    <div class="port-led"></div>
+                    <div class="port-hole"></div>
+                    <div class="port-number">8</div>
+                </div>
+            </div>
+
+            <!-- ردیف دوم: پورت ۹ تا ۱۶ -->
+            <div class="port-row">
+                <div class="port port-unknown" data-port="Fa0/9" data-index="9" onclick="openPortModal('Fa0/9')">
+                    <div class="port-led"></div>
+                    <div class="port-hole"></div>
+                    <div class="port-number">9</div>
+                </div>
+                <div class="port port-unknown" data-port="Fa0/10" data-index="10" onclick="openPortModal('Fa0/10')">
+                    <div class="port-led"></div>
+                    <div class="port-hole"></div>
+                    <div class="port-number">10</div>
+                </div>
+                <div class="port port-unknown" data-port="Fa0/11" data-index="11" onclick="openPortModal('Fa0/11')">
+                    <div class="port-led"></div>
+                    <div class="port-hole"></div>
+                    <div class="port-number">11</div>
+                </div>
+                <div class="port port-unknown" data-port="Fa0/12" data-index="12" onclick="openPortModal('Fa0/12')">
+                    <div class="port-led"></div>
+                    <div class="port-hole"></div>
+                    <div class="port-number">12</div>
+                </div>
+                <div class="port port-unknown" data-port="Fa0/13" data-index="13" onclick="openPortModal('Fa0/13')">
+                    <div class="port-led"></div>
+                    <div class="port-hole"></div>
+                    <div class="port-number">13</div>
+                </div>
+                <div class="port port-unknown" data-port="Fa0/14" data-index="14" onclick="openPortModal('Fa0/14')">
+                    <div class="port-led"></div>
+                    <div class="port-hole"></div>
+                    <div class="port-number">14</div>
+                </div>
+                <div class="port port-unknown" data-port="Fa0/15" data-index="15" onclick="openPortModal('Fa0/15')">
+                    <div class="port-led"></div>
+                    <div class="port-hole"></div>
+                    <div class="port-number">15</div>
+                </div>
+                <div class="port port-unknown" data-port="Fa0/16" data-index="16" onclick="openPortModal('Fa0/16')">
+                    <div class="port-led"></div>
+                    <div class="port-hole"></div>
+                    <div class="port-number">16</div>
+                </div>
+            </div>
+
+            <!-- پورت‌های Uplink (تزئینی) -->
+            <div id="uplink-ports">
+                <span class="uplink-label">UPLINK</span>
+                <div class="uplink-port"></div>
+                <div class="uplink-port"></div>
+            </div>
+
+        </div><!-- end switch-body -->
+
+        <!-- راهنمای رنگ‌ها -->
+        <div id="color-legend">
+            <span class="legend-item">
+                <span class="legend-dot dot-green"></span> Active
+            </span>
+            <span class="legend-item">
+                <span class="legend-dot dot-red"></span> Down / Disabled
+            </span>
+            <span class="legend-item">
+                <span class="legend-dot dot-orange"></span> Trunk
+            </span>
+        </div>
+
+        <!-- پیغام وضعیت -->
+        <div id="status-message"></div>
+
+    </div><!-- end switch-container -->
+
+
+    <!-- ═══════════════ Modal Overlay ═══════════════ -->
+    <div id="modal-overlay" onclick="closeModalOnOverlay(event)">
+
+        <div id="port-modal">
+
+            <!-- هدر modal -->
+            <div class="modal-header">
+                <h2 id="modal-port-title">Port Settings</h2>
+                <button class="btn-close" onclick="closeModal()">✕ Close</button>
+            </div>
+
+            <!-- وضعیت پورت -->
+            <div class="modal-section">
+                <h4>PORT STATUS</h4>
+                <div id="port-status-display">
+                    <span id="port-status-text">---</span>
+                </div>
+                <div class="btn-group">
+                    <button class="btn-green" onclick="enablePort()">Enable Port</button>
+                    <button class="btn-red" onclick="disablePort()">Disable Port</button>
+                </div>
+            </div>
+
+            <!-- توضیحات -->
+            <div class="modal-section">
+                <h4>DESCRIPTION</h4>
+                <input type="text" id="input-description" placeholder="e.g. Accounting-PC, Camera-01">
+            </div>
+
+            <!-- VLAN -->
+            <div class="modal-section">
+                <h4>VLAN</h4>
+                <div class="form-row">
+                    <label>Mode:</label>
+                    <select id="input-mode" onchange="toggleNativeVlan()">
+                        <option value="access">Access</option>
+                        <option value="trunk">Trunk</option>
+                    </select>
+                </div>
+                <div class="form-row">
+                    <label>VLAN ID:</label>
+                    <input type="number" id="input-vlan" min="1" max="4094" placeholder="1">
+                </div>
+                <div class="form-row" id="native-vlan-row" style="display:none">
+                    <label>Native VLAN (Trunk only):</label>
+                    <input type="number" id="input-native-vlan" min="1" max="4094" placeholder="1">
+                </div>
+            </div>
+
+            <!-- سرعت -->
+            <div class="modal-section">
+                <h4>SPEED</h4>
+                <select id="input-speed">
+                    <option value="auto">Auto</option>
+                    <option value="10">10 Mbps</option>
+                    <option value="100">100 Mbps</option>
+                    <option value="1000">1000 Mbps</option>
+                </select>
+            </div>
+
+            <!-- Duplex -->
+            <div class="modal-section">
+                <h4>DUPLEX</h4>
+                <select id="input-duplex">
+                    <option value="auto">Auto</option>
+                    <option value="full">Full</option>
+                    <option value="half">Half</option>
+                </select>
+            </div>
+
+            <!-- Port Security -->
+            <div class="modal-section">
+                <h4>PORT SECURITY</h4>
+                <div class="form-row">
+                    <label>Port Security:</label>
+                    <input type="checkbox" id="input-port-security" onchange="toggleSecurityFields()">
+                    <span>Enable</span>
+                </div>
+                <div id="security-fields" style="display:none">
+                    <div class="form-row">
+                        <label>Maximum MAC Addresses:</label>
+                        <input type="number" id="input-max-mac" min="1" max="132" value="1">
+                    </div>
+                    <div class="form-row">
+                        <label>Sticky MAC:</label>
+                        <input type="checkbox" id="input-sticky-mac">
+                        <span>Enable</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- اطلاعات فقط نمایش -->
+            <div class="modal-section">
+                <h4>PORT INFO (READ ONLY)</h4>
+                <div class="info-grid">
+                    <span class="info-label">Port Name:</span>
+                    <span id="info-port-name">---</span>
+
+                    <span class="info-label">MAC Address(es):</span>
+                    <span id="info-mac-addresses">---</span>
+
+                    <span class="info-label">Current VLAN:</span>
+                    <span id="info-current-vlan">---</span>
+
+                    <span class="info-label">Current Speed:</span>
+                    <span id="info-current-speed">---</span>
+
+                    <span class="info-label">Current Duplex:</span>
+                    <span id="info-current-duplex">---</span>
+
+                    <span class="info-label">Port Type:</span>
+                    <span id="info-port-type">---</span>
+                </div>
+            </div>
+
+            <!-- دکمه‌های عملیات -->
+            <div class="modal-actions">
+                <button class="btn-green"  onclick="savePortConfig()">💾 Save Changes</button>
+                <button class="btn-orange" onclick="reloadPort()">🔄 Reload Port</button>
+                <button class="btn-gray"   onclick="resetPort()">↺ Reset to Default</button>
+                <button class="btn-close"  onclick="closeModal()">✕ Close</button>
+            </div>
+
+            <!-- نشانه loading -->
+            <div id="modal-loading" style="display:none">⏳ Processing...</div>
+
+        </div><!-- end port-modal -->
+
+    </div><!-- end modal-overlay -->
+
+    <script src="/static/script.js"></script>
+</body>
+</html>

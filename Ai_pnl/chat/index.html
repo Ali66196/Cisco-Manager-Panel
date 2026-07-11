@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Cisco AI Assistant</title>
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+
+  
+  <div id="header">
+    <span id="title">Cisco AI Assistant</span>
+    <div id="status-area">
+      <span id="status-dot"></span>
+      <span id="status-text">Checking...</span>
+    </div>
+    <button id="log-btn">Log</button>
+  </div>
+
+  <div id="chat-area">
+    <div class="message assistant-message">
+      <strong>Cisco AI Assistant</strong>
+      👋 Hello! I'm your Cisco switch assistant. I can help you with:
+      <br /><br />
+      • 📊 <b>View port status</b> — Check all ports or a specific port<br />
+      • 🔌 <b>Enable / Disable ports</b> — Shutdown or bring up interfaces<br />
+      • 🏷️ <b>Set VLANs</b> — Assign access or trunk VLANs<br />
+      • 📝 <b>Set descriptions</b> — Label ports with custom descriptions<br />
+      • ⚡ <b>Set port speed &amp; duplex</b> — Configure interface speed<br />
+      • 🔄 <b>Bounce a port</b> — Restart an interface<br />
+      <br />
+      Just describe what you want in plain English and I'll take care of it!
+    </div>
+  </div>
+
+  <div id="thinking-indicator">
+    <div class="dot-pulse"></div>
+    <span>AI is thinking...</span>
+  </div>
+
+  <div id="input-area">
+    <input
+      type="text"
+      id="user-input"
+      placeholder="Ask about your switch or give a command..."
+      autocomplete="off"
+    />
+    <button id="send-btn">Send</button>
+  </div>
+
+  <script src="script.js"></script>
+</body>
+</html>
